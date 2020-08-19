@@ -98,6 +98,20 @@ const Home = () => {
           console.log(err);
       })
   };
+  const deletePost =(postid)=>{
+      fetch(`/deletepost/${postid}`, {
+          method:"delete",
+          headers:{
+            "Authorization": "Bearer " + localStorage.getItem("jwt")
+
+          }
+     
+      }).then(res=>res.json())
+      .then((result)=>{
+          console.log(result);
+      })
+
+  }
   return (
     <div className="home">
       {data.map((item) => {
