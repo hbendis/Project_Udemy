@@ -76,7 +76,7 @@ const Home = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("jwt")
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
       },
       body: JSON.stringify({
         postId,
@@ -94,31 +94,44 @@ const Home = () => {
           }
         });
         setData(newData);
-      }).catch(err=>{
-          console.log(err);
       })
+      .catch((err) => {
+        console.log(err);
+      });
   };
-  const deletePost =(postid)=>{
-      fetch(`/deletepost/${postid}`, {
-          method:"delete",
-          headers:{
-            "Authorization": "Bearer " + localStorage.getItem("jwt")
-
-          }
-          
-     
-      }).then(res=>res.json())
-      .then((result)=>{
-          console.log(result);
-      })
-
-  }
+  const deletePost = (postid) => {
+    fetch(`/deletepost/${postid}`, {
+      method: "delete",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result);
+        const newData = data.filter((item) => {
+          return item._id !== result.result._id;
+        });
+        setData(newData);
+      });
+  };
   return (
     <div className="home">
       {data.map((item) => {
         return (
           <div className="card home-card" key={item._id}>
-            <h5>{item.postedBy.name}</h5>
+            <h5>
+              {item.postedBy.name}{" "}
+              {item.postedBy._id == state._id && (
+                <i
+                  className="material-icons"
+                  onClick={() => deletePost(item._id)}
+                  style={{ float: "right" }}
+                >
+                  delete
+                </i>
+              )}
+            </h5>
             <div className="card-image">
               <img alt={item.title} src={item.photo} alt="" />
             </div>
@@ -150,13 +163,13 @@ const Home = () => {
 
               <h6>{item.title}</h6>
               <p>{item.body}</p>
-              {
-                  item.comments.map(record=>{
-                      return (
-                      <h6 key={record._id}>{record.postedBy.name} {record.text}</h6>
-                      )
-                  })
-              }
+              {item.comments.map((record) => {
+                return (
+                  <h6 key={record._id}>
+                    {record.postedBy.name} {record.text}
+                  </h6>
+                );
+              })}
               <form
                 onSubmit={(e) => {
                   e.preventDefault();

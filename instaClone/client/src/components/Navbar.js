@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useState,useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { UserContext } from "../App";
 
@@ -9,8 +9,9 @@ const Navbar = () => {
   const renderList = () => {
     if (state) {
       return [
-        <li><Link to="/profile">Profile</Link></li>,
-        <li><Link to="/create">Create Post</Link></li>,
+        <li style= {{textTransform:"capitalize" }}><Link to="/profile"> {state.name}</Link></li>,
+        <li ><Link to="/create">Create Post</Link></li>,
+      // <li style={{color:"black", textTransform:"capitalize" }}> {state.name} </li>,
         <li>
           <button className="btn waves-effect waves-light #64b5f6 blue darken-1"
             onClick={() => {localStorage.clear()
@@ -21,6 +22,7 @@ const Navbar = () => {
             LogOut
             </button>
         </li>
+     
 
 
       ]
@@ -36,7 +38,7 @@ const Navbar = () => {
 
   return (
     <nav>
-      <div className="nav-wrapper white">
+      <div className="nav-wrapper white" >
         <Link to={state ? "/" : "/signin"} className="brand-logo left">International Cooking</Link>
         <ul id="nav-mobile" className="right hide-on-med-and-down">
 

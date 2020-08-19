@@ -56,7 +56,9 @@ router.put('/like', requireLogin, (req, res) => {
     }, {
         new: true
 
-    }).exec((err, result) => {
+        
+    }).populate("postedBy", "_id name")
+    .exec((err, result) => {
         if (err) {
             return res.status(422).json({ error: err })
         } else {
@@ -71,7 +73,10 @@ router.put('/unlike', requireLogin, (req, res) => {
     }, {
         new: true
 
-    }).exec((err, result) => {
+    })
+    .populate("postedBy", "_id name")
+
+    .exec((err, result) => {
         if (err) {
             return res.status(422).json({ error: err })
         } else {
@@ -102,17 +107,17 @@ router.put('/comment', requireLogin, (req, res) => {
         })
 
 })
-router.delete('/deletepost/:postId', (req, res) => {
+router.delete('/deletepost/:postId', requireLogin, (req, res) => {
     Post.findOne({ _id: req.params.postId })
         .populate("postedBy", "_id")
         .exec((err, post) => {
-            if (!err || !post) {
+            if (err || !post) {
                 return res.status(422).json({ error: err })
             }
             if (post.postedBy._id.toString() === req.user._id.toString()) {
                 post.remove()
                     .then(result => {
-                        res.json({ message: "successfully deleted" })
+                        res.json({ result })
                     }).catch(err => {
                         console.log(err);
                     })
